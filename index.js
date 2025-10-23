@@ -1,0 +1,38 @@
+// Configuração inicial
+const express = require("express");
+const mongoose = require("mongoose");
+const app = express(); // usando
+
+// Forma de ler JSON / middlewares
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+app.use(express.json());
+
+// Declaro esse trecho, agora podemos ler e retornar json
+
+// Rota inicial / endpoint
+app.get("/", (req, res) => {
+  // mostrar req
+
+  res.json({ message: "Oi express!" });
+});
+
+//mongodb+srv://igormatheusdev01_db_user:<4gkGQseTpVNGfkDg>@databaseapi.mrq4fzk.mongodb.net/
+
+const DB_USER = "igormatheusdev01_db_user";
+const DB_PASSWORD = encodeURIComponent("4gkGQseTpVNGfkDg");
+
+// Entregar uma porta
+mongoose
+  .connect(
+    `mongodb+srv://${DB_USER}:${DB_PASSWORD}@cluster0.mrq4fzk.mongodb.net/?retryWrites=true&w=majority&appName=databaseapi`
+  )
+  .then(() => {
+    console.log("Conectamos ao MongoDB");
+    app.listen(3000); //escutando essa porta
+  })
+  .catch((err) => console.log(err));
