@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express(); // usando
 
+
 // Forma de ler JSON / middlewares
 app.use(
   express.urlencoded({
@@ -10,18 +11,22 @@ app.use(
   })
 );
 
+// Declarado esse trecho, agora podemos ler e retornar json
 app.use(express.json());
 
-// Declaro esse trecho, agora podemos ler e retornar json
+// Rotas da API 
+const personRoutes = require('./routes/personRoutes')
+
+app.use('/person', personRoutes);
+
 
 // Rota inicial / endpoint
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   // mostrar req
 
   res.json({ message: "Oi express!" });
 });
 
-//mongodb+srv://igormatheusdev01_db_user:<4gkGQseTpVNGfkDg>@databaseapi.mrq4fzk.mongodb.net/
 
 const DB_USER = "igormatheusdev01_db_user";
 const DB_PASSWORD = encodeURIComponent("4gkGQseTpVNGfkDg");
@@ -36,3 +41,7 @@ mongoose
     app.listen(3000); //escutando essa porta
   })
   .catch((err) => console.log(err));
+
+
+
+
