@@ -1,16 +1,16 @@
-const router = require('express').Router()
-const Person = require('../models/Person')
+const router = require("express").Router();
+const Person = require("../models/Person");
 
+// CREATE
 
-// Create
-
-router.post('/', async (req, res) => {
+router.post("/", async (req, res) => {
   // req.body
-  // {name:"igor", salary: 2000, approved: true}
   const { name, salary, approved } = req.body; // destructure (recurso do js moderno, criando 3 variaveis de uma vez)
+  // {name:"igor", salary: 2000, approved: true}
 
   if (!name) {
     res.status(422).json({ error: "O nome da pessoa não foi enviado!" });
+    return;
   }
 
   const person = {
@@ -30,20 +30,36 @@ router.post('/', async (req, res) => {
   }
 });
 
-
 // READ - Leitura de dados
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
+  try {
+    const people = await Person.find();
 
-    try {
-        const people = await Person.find()
+    res.status(200).json(people);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
 
-        res.status(200).json(people);
+// Buscando por um usuário especifico de forma dinâmica
+// Extrair o dado da requisição pela URL = req.params
+router.get("/:id", async (req, res) => {
 
-    } catch (error) {
-        res.status(500).json({error: error})
+    const id = req.params.id;
+
+  try {
+    // quero encontrar o usuário que tenha o _id igual o id que venha na requisição req.params
+    const person = await Person.findOne({ _id: id });
+
+    if (!person) {
+      res.status(422).json({ message: "O usuário não foi encontrado!" });
+      return 
     }
 
-} )
+    res.status(200).json(person);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
 
-module.exports = router
- 
+module.exports = router;
